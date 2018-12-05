@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Make Landscape available in this app
 
         // TODO: Commenting this out for testing purpose
-//         Intent launchLoginActivitiy = new Intent(MainActivity.this, LoginActivity.class);
-//         startActivity(launchLoginActivitiy);
-//         finish();
+         Intent launchLoginActivitiy = new Intent(MainActivity.this, LoginActivity.class);
+         startActivity(launchLoginActivitiy);
+         finish();
 
         drawerLayout = findViewById(R.id.drawer_layout);
 

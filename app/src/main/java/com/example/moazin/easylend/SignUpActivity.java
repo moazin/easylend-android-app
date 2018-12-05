@@ -1,7 +1,9 @@
 package com.example.moazin.easylend;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -9,6 +11,12 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        setTitle("Sign Up");
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Sign Up");
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 }

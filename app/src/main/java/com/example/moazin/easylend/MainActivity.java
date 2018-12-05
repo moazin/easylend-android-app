@@ -1,6 +1,8 @@
 package com.example.moazin.easylend;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +30,18 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
+        // setup shared preferences
+        sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("user_token", "no_user");
+        if(token.equals("no_user")){
+            Intent launchLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(launchLoginActivity);
+            finish();
+        }
+
         // TODO: Make Landscape available in this app
 
         // TODO: Commenting this out for testing purpose
-         Intent launchLoginActivitiy = new Intent(MainActivity.this, LoginActivity.class);
-         startActivity(launchLoginActivitiy);
-         finish();
 
         drawerLayout = findViewById(R.id.drawer_layout);
 

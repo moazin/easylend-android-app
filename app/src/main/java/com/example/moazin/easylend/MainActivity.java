@@ -20,8 +20,9 @@ public class MainActivity extends AppCompatActivity {
         // TODO: Make Landscape available in this app
 
         // TODO: Commenting this out for testing purpose
-        // Intent launchLoginActivitiy = new Intent(MainActivity.this, LoginActivity.class);
-        // startActivity(launchLoginActivitiy);
+//         Intent launchLoginActivitiy = new Intent(MainActivity.this, LoginActivity.class);
+//         startActivity(launchLoginActivitiy);
+//         finish();
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -35,13 +36,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        // TODO: if login is not done, redirect to login activity
-//        Intent go_back_to_login = new Intent(MainActivity.this, LoginActivity.class);
-//        startActivity(go_back_to_login);
-        super.onResume();
     }
 }

@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         // setup shared preferences
         sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("user_token", "no_user");
+        String token = sharedPreferences.getString("token", "no_user");
         if(token.equals("no_user")){
             Intent launchLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(launchLoginActivity);
@@ -40,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // TODO: Make Landscape available in this app
-
-        // TODO: Commenting this out for testing purpose
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -51,10 +51,22 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
-                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                switch(menuItem.getItemId()){
+                    case R.id.logout_button:
+                        sharedPreferences.edit().clear().commit();
+                        Intent redirect_login = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(redirect_login);
+                        finish();
+
+                }
                 return true;
             }
         });
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView user_name_display = ((View) headerView).findViewById(R.id.user_name_display);
+        String full_name = sharedPreferences.getString("first_name", "no_first_name") + " " + sharedPreferences.getString("last_name", "no_last_name");
+        user_name_display.setText(full_name);
     }
 
     @Override

@@ -75,12 +75,21 @@ public class LoginActivity extends AppCompatActivity {
                                     try {
                                         progressBar.setVisibility(View.INVISIBLE);
                                         String token = response.getString("token");
-                                        Toast.makeText(LoginActivity.this, token, Toast.LENGTH_LONG).show();
+                                        int id = response.getInt("id");
+                                        String first_name = response.getString("first_name");
+                                        String last_name = response.getString("last_name");
+                                        String email = response.getString("email");
+                                        String username = response.getString("username");
+//                                        Toast.makeText(LoginActivity.this, token, Toast.LENGTH_LONG).show();
                                         SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences("user_info", Context.MODE_PRIVATE);
                                         SharedPreferences.Editor preferenceEditor = sharedPreferences.edit();
-                                        preferenceEditor.putString("user_token", token);
+                                        preferenceEditor.putString("token", token);
+                                        preferenceEditor.putInt("id", id);
+                                        preferenceEditor.putString("first_name", first_name);
+                                        preferenceEditor.putString("last_name", last_name);
+                                        preferenceEditor.putString("email", email);
+                                        preferenceEditor.putString("username", username);
                                         preferenceEditor.apply();
-                                        requestQueue.stop();
                                         Intent redirect_home = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(redirect_home);
                                         finish();

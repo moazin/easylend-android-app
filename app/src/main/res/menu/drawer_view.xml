@@ -4,5 +4,8 @@
         <item android:title="Transactions" />
         <item android:title="Profile" />
         <item android:title="Exchange" />
+        <item
+            android:id="@+id/logout_button"
+            android:title="Logout" />
     </group>
 </menu>

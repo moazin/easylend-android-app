@@ -20,10 +20,12 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
         tools:context=".SignUpActivity">
 
         <EditText
             android:id="@+id/signup_firstname"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -39,11 +41,12 @@
 
         <EditText
             android:id="@+id/signup_lastname"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:ems="10"
@@ -55,11 +58,12 @@
 
         <EditText
             android:id="@+id/signup_username"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:ems="10"
@@ -71,11 +75,12 @@
 
         <EditText
             android:id="@+id/signup_email"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:ems="10"
@@ -87,11 +92,12 @@
 
         <EditText
             android:id="@+id/signup_password"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:ems="10"
@@ -103,11 +109,12 @@
 
         <EditText
             android:id="@+id/signup_repeat_password"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:ems="10"
@@ -119,11 +126,12 @@
 
         <Button
             android:id="@+id/signup_signup_button"
+            style="@style/MyEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
             android:text="Sign Up"

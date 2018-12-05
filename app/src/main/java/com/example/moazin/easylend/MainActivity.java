@@ -14,4 +14,12 @@ public class MainActivity extends AppCompatActivity {
         Intent launchLoginActivitiy = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(launchLoginActivitiy);
     }
+
+    @Override
+    protected void onResume() {
+        // TODO: if login is not done, redirect to login activity
+        Intent go_back_to_login = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(go_back_to_login);
+        super.onResume();
+    }
 }

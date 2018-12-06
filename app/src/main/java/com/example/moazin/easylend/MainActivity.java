@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+        // be default load up the exchange fragment for now
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment exchangeFragment = new ExchangeFragment();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
+
         // TODO: Make Landscape available in this app
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -51,12 +59,22 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
+                FragmentManager fragmentManager = getSupportFragmentManager();
                 switch(menuItem.getItemId()){
+                    case R.id.transaction_button:
+                        Fragment transactionFragment = new TransactionFragment();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, transactionFragment).commit();
+                        break;
+                    case R.id.exchange_button:
+                        Fragment exchangeFragment = new ExchangeFragment();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
+                        break;
                     case R.id.logout_button:
                         sharedPreferences.edit().clear().commit();
                         Intent redirect_login = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(redirect_login);
                         finish();
+                        break;
 
                 }
                 return true;

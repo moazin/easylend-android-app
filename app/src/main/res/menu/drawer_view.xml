@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:title="Transactions" />
-        <item android:title="Profile" />
-        <item android:title="Exchange" />
+        <item
+            android:id="@+id/transaction_button"
+            android:title="Transactions" />
+        <item
+            android:id="@+id/profile_button"
+            android:title="Profile" />
+        <item
+            android:id="@+id/exchange_button"
+            android:title="Exchange" />
         <item
             android:id="@+id/logout_button"
             android:title="Logout" />

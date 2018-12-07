@@ -4,9 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,7 +67,7 @@ public class ExchangeAdapter extends RecyclerView.Adapter<ExchangeAdapter.MyView
                 myViewHolder.personExchange.setTextColor(pink);
             }
         } catch (JSONException jsonException){
-            // TODO: Proper exception handling here
+            Toast.makeText(myViewHolder.personExchange.getContext(), jsonException.toString(), Toast.LENGTH_LONG).show();
         }
     }
 }

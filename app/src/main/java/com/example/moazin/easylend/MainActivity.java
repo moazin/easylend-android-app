@@ -19,6 +19,14 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,11 +36,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private SharedPreferences sharedPreferences;
-
+    RequestQueue queue;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,17 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
         // setup shared preferences
         sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", "no_user");
+        token = sharedPreferences.getString("token", "no_user");
         if(token.equals("no_user")){
             Intent launchLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(launchLoginActivity);
             finish();
         }
-
-        // be default load up the exchange fragment for now
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment exchangeFragment = new ExchangeFragment();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
 
         // TODO: Make Landscape available in this app
 
@@ -97,35 +103,45 @@ public class MainActivity extends AppCompatActivity {
         String full_name = sharedPreferences.getString("first_name", "no_first_name") + " " + sharedPreferences.getString("last_name", "no_last_name");
         user_name_display.setText(full_name);
 
-        // Putting a file in CacheDir manually holding JSON data
-        // TODO: This is for testing only
-        JSONObject moazin = new JSONObject();
-        JSONObject wahab = new JSONObject();
-        try {
-            moazin.put("first_name", "Moazin");
-            moazin.put("last_name",  "Khatri");
-            moazin.put("exchange", 50);
-            wahab.put("first_name", "Abdul");
-            wahab.put("last_name",  "Wahab");
-            wahab.put("exchange", -100);
-        } catch(JSONException jsonException){
-            // TODO: Properly handle this shit
-        }
-        JSONArray array = new JSONArray();
-        array.put(moazin);
-        array.put(wahab);
-        try {
-            File directory = this.getCacheDir();
-            File file = new File(directory, "exchange_data.json");
-            FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(array.toString());
-            bufferedWriter.close();
-            fileWriter.close();
-        } catch (IOException ioe){
-            // TODO: Proper error handling here
-        }
+        // Send a request to server asking for exchange data
+        String url = "http://192.168.8.100:8000/transactions/myexchangewitheveryone";
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+            new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    File directory = getCacheDir();
+                    File file = new File(directory, "exchange_data.json");
+                    try {
+                        FileWriter fileWriter = new FileWriter(file);
+                        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                        bufferedWriter.write(response.toString());
+                        bufferedWriter.close();
+                        fileWriter.close();
+                        // be default load up the exchange fragment for now
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        Fragment exchangeFragment = new ExchangeFragment();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
+                    } catch (IOException ioe) {
+                        // TODO: Proper error handling
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
+                }
+            }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Authorization", "Token " + token);
+                return params;
+            }
+        };
+        queue = Volley.newRequestQueue(this);
+        queue.add(jsonArrayRequest);
     }
 
     @Override

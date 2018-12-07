@@ -41,6 +41,7 @@ public class ExchangeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_exchange, container, false);
         // Read from cache dir
         try {
+            // TODO: DO proper handling here
             FileInputStream file = new FileInputStream(new File(getContext().getCacheDir(), "exchange_data.json"));
             InputStreamReader inputStreamReader = new InputStreamReader(file);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -54,9 +55,10 @@ public class ExchangeFragment extends Fragment {
             JSONArray array = new JSONArray(ret);
             // setting up the Recycler View
             RecyclerView recyclerView = view.findViewById(R.id.exchange_recycler_view);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             ExchangeAdapter exchangeAdapter = new ExchangeAdapter(array);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(exchangeAdapter);
+            recyclerView.setHasFixedSize(true);
         } catch (FileNotFoundException fnfe){
             // TODO: Proper Error Handling
         } catch (IOException ioe) {

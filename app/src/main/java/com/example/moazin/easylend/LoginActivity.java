@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
-                String url = "http://10.0.2.2:8000/api-token-auth/";
+                String url = "http://192.168.8.100:8000/api-token-auth/";
 
                 // Let's set the request
                 JSONObject request_data = new JSONObject();

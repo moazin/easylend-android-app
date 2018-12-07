@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    private Fragment exchangeFragment;
     private DrawerLayout drawerLayout;
     private SharedPreferences sharedPreferences;
     RequestQueue queue;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentManager.beginTransaction().replace(R.id.content_frame, transactionFragment).commit();
                         break;
                     case R.id.exchange_button:
-                        Fragment exchangeFragment = new ExchangeFragment();
+                        exchangeFragment = new ExchangeFragment();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
                         break;
                     case R.id.logout_button:
@@ -104,49 +105,10 @@ public class MainActivity extends AppCompatActivity {
         String full_name = sharedPreferences.getString("first_name", "no_first_name") + " " + sharedPreferences.getString("last_name", "no_last_name");
         user_name_display.setText(full_name);
 
-        // Send a request to server asking for exchange data
-        String base_url = getString(R.string.base_url_emulator);
-        String url = "http://" + base_url + ":8000/transactions/myexchangewitheveryone";
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-            new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    File directory = getCacheDir();
-                    File file = new File(directory, "exchange_data.json");
-                    try {
-                        FileWriter fileWriter = new FileWriter(file);
-                        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                        bufferedWriter.write(response.toString());
-                        bufferedWriter.close();
-                        fileWriter.close();
-                        // be default load up the exchange fragment for now
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        Fragment exchangeFragment = new ExchangeFragment();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
-                    } catch (IOException ioe) {
-                        // TODO: Proper error handling
-                    }
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            }
-        ){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("Authorization", "Token " + token);
-                return params;
-            }
-        };
-        queue = Volley.newRequestQueue(this);
-        queue.add(jsonArrayRequest);
-
-        IntentFilter intentFilter = new IntentFilter("moazin.khatri");
-        LocalBroadcastManager.getInstance(this).registerReceiver(new ExchangeBroadcastReceiver(), intentFilter);
+        // starting the fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        exchangeFragment = new ExchangeFragment();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
 
         Thread ab = new Thread(new ExchangeSynchronizer(this));
         ab.start();

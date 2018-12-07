@@ -1,8 +1,10 @@
 package com.example.moazin.easylend;
 
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -28,8 +30,7 @@ import java.io.InputStreamReader;
  * A simple {@link Fragment} subclass.
  */
 public class ExchangeFragment extends Fragment {
-
-
+    ExchangeAdapter exchangeAdapter;
     public ExchangeFragment() {
         // Required empty public constructor
     }
@@ -37,35 +38,16 @@ public class ExchangeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_exchange, container, false);
-        // Read from cache dir
-        try {
-            // TODO: DO proper handling here
-            FileInputStream file = new FileInputStream(new File(getContext().getCacheDir(), "exchange_data.json"));
-            InputStreamReader inputStreamReader = new InputStreamReader(file);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String receiveString = "";
-            StringBuilder stringBuilder = new StringBuilder();
-            while ( (receiveString = bufferedReader.readLine()) != null ) {
-                stringBuilder.append(receiveString);
-            }
-            bufferedReader.close();
-            String ret = stringBuilder.toString();
-            JSONArray array = new JSONArray(ret);
-            // setting up the Recycler View
-            RecyclerView recyclerView = view.findViewById(R.id.exchange_recycler_view);
-            ExchangeAdapter exchangeAdapter = new ExchangeAdapter(array);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.setAdapter(exchangeAdapter);
-            recyclerView.setHasFixedSize(true);
-        } catch (FileNotFoundException fnfe){
-            // TODO: Proper Error Handling
-        } catch (IOException ioe) {
-            // TODO: Proper Error Handling
-        } catch (JSONException jsone) {
-            // TODO: Proper Error Handling
-        }
+        // register the broadcast receiver
+        IntentFilter intentFilter = new IntentFilter("moazin.khatri");
+        // Inflate the layout for this fragment
+        exchangeAdapter = new ExchangeAdapter();
+        RecyclerView recyclerView = view.findViewById(R.id.exchange_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(exchangeAdapter);
+        recyclerView.setHasFixedSize(true);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(new ExchangeBroadcastReceiver(exchangeAdapter), intentFilter);
         return view;
     }
 

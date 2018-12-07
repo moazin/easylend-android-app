@@ -18,13 +18,19 @@ public class ExchangeAdapter extends RecyclerView.Adapter<ExchangeAdapter.MyView
     private JSONArray mDataset;
 
     // constructor for this adapter
-    public ExchangeAdapter(JSONArray dataset){
+    public ExchangeAdapter(){
+        // empty
+    }
+
+    public void setData(JSONArray dataset){
         mDataset = dataset;
+        notifyDataSetChanged();
     }
 
     // a count returning function
     @Override
     public int getItemCount() {
+        if(mDataset == null) return 0;
         return mDataset.length();
     }
 

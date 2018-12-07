@@ -19,6 +19,16 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private SharedPreferences sharedPreferences;
@@ -81,10 +91,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // writing the user's name in the nav drawer header
         View headerView = navigationView.getHeaderView(0);
         TextView user_name_display = ((View) headerView).findViewById(R.id.user_name_display);
         String full_name = sharedPreferences.getString("first_name", "no_first_name") + " " + sharedPreferences.getString("last_name", "no_last_name");
         user_name_display.setText(full_name);
+
+        // Putting a file in CacheDir manually holding JSON data
+        // TODO: This is for testing only
+        JSONObject moazin = new JSONObject();
+        JSONObject wahab = new JSONObject();
+        try {
+            moazin.put("first_name", "Moazin");
+            moazin.put("last_name",  "Khatri");
+            moazin.put("exchange", 50);
+            wahab.put("first_name", "Abdul");
+            wahab.put("last_name",  "Wahab");
+            wahab.put("exchange", -100);
+        } catch(JSONException jsonException){
+            // TODO: Properly handle this shit
+        }
+        JSONArray array = new JSONArray();
+        array.put(moazin);
+        array.put(wahab);
+        try {
+            File directory = this.getCacheDir();
+            File file = new File(directory, "exchange_data.json");
+            FileWriter fileWriter = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(array.toString());
+            bufferedWriter.close();
+            fileWriter.close();
+        } catch (IOException ioe){
+            // TODO: Proper error handling here
+        }
+
     }
 
     @Override

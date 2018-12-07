@@ -10,10 +10,18 @@ import android.util.JsonReader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 
 /**
@@ -31,27 +39,31 @@ public class ExchangeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_exchange, container, false);
-        // setting up data for populating recycler view (at least for testing)
-        JSONObject moazin = new JSONObject();
-        JSONObject wahab = new JSONObject();
+        // Read from cache dir
         try {
-            moazin.put("first_name", "Moazin");
-            moazin.put("last_name",  "Khatri");
-            moazin.put("exchange", 50);
-            wahab.put("first_name", "Abdul");
-            wahab.put("last_name",  "Wahab");
-            wahab.put("exchange", -100);
-        } catch(JSONException jsonException){
-            // TODO: Properly handle this shit
+            FileInputStream file = new FileInputStream(new File(getContext().getCacheDir(), "exchange_data.json"));
+            InputStreamReader inputStreamReader = new InputStreamReader(file);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String receiveString = "";
+            StringBuilder stringBuilder = new StringBuilder();
+            while ( (receiveString = bufferedReader.readLine()) != null ) {
+                stringBuilder.append(receiveString);
+            }
+            bufferedReader.close();
+            String ret = stringBuilder.toString();
+            JSONArray array = new JSONArray(ret);
+            // setting up the Recycler View
+            RecyclerView recyclerView = view.findViewById(R.id.exchange_recycler_view);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            ExchangeAdapter exchangeAdapter = new ExchangeAdapter(array);
+            recyclerView.setAdapter(exchangeAdapter);
+        } catch (FileNotFoundException fnfe){
+            // TODO: Proper Error Handling
+        } catch (IOException ioe) {
+            // TODO: Proper Error Handling
+        } catch (JSONException jsone) {
+            // TODO: Proper Error Handling
         }
-        JSONArray array = new JSONArray();
-        array.put(moazin);
-        array.put(wahab);
-        // setting up the Recycler View
-        RecyclerView recyclerView = view.findViewById(R.id.exchange_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ExchangeAdapter exchangeAdapter = new ExchangeAdapter(array);
-        recyclerView.setAdapter(exchangeAdapter);
         return view;
     }
 

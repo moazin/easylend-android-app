@@ -35,9 +35,11 @@ public class ExchangeFragment extends Fragment {
         JSONObject moazin = new JSONObject();
         JSONObject wahab = new JSONObject();
         try {
-            moazin.put("name", "Moazin Khatri");
+            moazin.put("first_name", "Moazin");
+            moazin.put("last_name",  "Khatri");
             moazin.put("exchange", 50);
-            wahab.put("name", "Abdul Wahab");
+            wahab.put("first_name", "Abdul");
+            wahab.put("last_name",  "Wahab");
             wahab.put("exchange", -100);
         } catch(JSONException jsonException){
             // TODO: Properly handle this shit

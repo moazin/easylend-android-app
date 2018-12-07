@@ -2,11 +2,13 @@ package com.example.moazin.easylend;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -15,7 +17,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
         user_name_display.setText(full_name);
 
         // Send a request to server asking for exchange data
-        String url = "http://192.168.8.100:8000/transactions/myexchangewitheveryone";
+        String base_url = getString(R.string.base_url_emulator);
+        String url = "http://" + base_url + ":8000/transactions/myexchangewitheveryone";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
             new Response.Listener<JSONArray>() {
                 @Override
@@ -142,6 +144,12 @@ public class MainActivity extends AppCompatActivity {
         };
         queue = Volley.newRequestQueue(this);
         queue.add(jsonArrayRequest);
+
+        IntentFilter intentFilter = new IntentFilter("moazin.khatri");
+        LocalBroadcastManager.getInstance(this).registerReceiver(new ExchangeBroadcastReceiver(), intentFilter);
+
+        Thread ab = new Thread(new ExchangeSynchronizer(this));
+        ab.start();
     }
 
     @Override
@@ -153,4 +161,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

@@ -63,7 +63,8 @@ public class SignUpActivity extends AppCompatActivity {
                         jsonObject.put("username", username.getText());
                         jsonObject.put("password", password.getText());
                         // create a request object
-                        String url = "http://192.168.8.100:8000/users/newuser";
+                        String base_url = getString(R.string.base_url_emulator);
+                        String url = "http://" + base_url +  ":8000/users/newuser";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                             new Response.Listener<JSONObject>() {
                                 @Override

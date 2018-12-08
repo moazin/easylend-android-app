@@ -71,7 +71,7 @@ public class NewTransactionDialogFragment extends DialogFragment {
                                         @Override
                                         public void onResponse(JSONObject response) {
                                             Intent intent = new Intent();
-                                            intent.setAction(getActivity().getString(R.string.exchange_dialog_closed));
+                                            intent.setAction(getString(R.string.exchange_dialog_closed));
                                             intent.putExtra("exchange_amount", amount);
                                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                                         }

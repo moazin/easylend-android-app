@@ -1,14 +1,18 @@
 package com.example.moazin.easylend.utilities;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moazin.easylend.PersonProfileActivity;
 import com.example.moazin.easylend.R;
 
 import org.json.JSONArray;
@@ -16,7 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ExchangeAdapter extends RecyclerView.Adapter<ExchangeAdapter.MyViewHolder> {
-    private JSONArray mDataset;
+    JSONArray mDataset;
 
     // constructor for this adapter
     public ExchangeAdapter(){
@@ -36,13 +40,30 @@ public class ExchangeAdapter extends RecyclerView.Adapter<ExchangeAdapter.MyView
     }
 
     // create a view holder object for our list items, each item is a constraint layout object
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView personName;
         public TextView personExchange;
-        public MyViewHolder(ConstraintLayout constraintLayout){
+        public MyViewHolder(final ConstraintLayout constraintLayout){
             super(constraintLayout);
             personName = constraintLayout.findViewById(R.id.person_name);
             personExchange = constraintLayout.findViewById(R.id.person_exchange);
+            constraintLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    Intent profileActivity = new Intent(constraintLayout.getContext(), PersonProfileActivity.class);
+                    try {
+                        JSONObject user = mDataset.getJSONObject(pos);
+                        profileActivity.putExtra("id", user.getInt("id"));
+                        profileActivity.putExtra("first_name", user.getString("first_name"));
+                        profileActivity.putExtra("last_name", user.getString("last_name"));
+                        profileActivity.putExtra("exchange", user.getDouble("exchange"));
+                        constraintLayout.getContext().startActivity(profileActivity);
+                    } catch (JSONException json){
+                        json.printStackTrace();
+                    }
+                }
+            });
         }
     }
 

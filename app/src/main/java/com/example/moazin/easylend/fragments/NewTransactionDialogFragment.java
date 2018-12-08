@@ -39,9 +39,11 @@ public class NewTransactionDialogFragment extends DialogFragment {
     EditText num;
     int from_id;
     Double amount;
+    String action;
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        action = getString(R.string.exchange_dialog_closed);
         // TODO: Fix this transaction security bug at any cost, anyone can create a transaction with any one's name
         to_id = getArguments().getInt("to_id");
         from_id = getArguments().getInt("from_id");
@@ -71,7 +73,7 @@ public class NewTransactionDialogFragment extends DialogFragment {
                                         @Override
                                         public void onResponse(JSONObject response) {
                                             Intent intent = new Intent();
-                                            intent.setAction(getString(R.string.exchange_dialog_closed));
+                                            intent.setAction(action);
                                             intent.putExtra("exchange_amount", amount);
                                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                                         }

@@ -2,13 +2,11 @@ package com.example.moazin.easylend;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,47 +16,35 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    // TODO: Make Landscape available in this app
+
+    // setting up these global variables so they can be used at different places
     private Fragment exchangeFragment;
+    private Fragment transactionFragment;
     private DrawerLayout drawerLayout;
     private SharedPreferences sharedPreferences;
     RequestQueue queue;
     private String token;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // setting up the toolbar as the top bar
+        // setting up the toolbar as the top bar (Basically sets the menu button)
         Toolbar customToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(customToolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
 
-        // setup shared preferences
+        // setup shared preferences (sharedPreferences are like key value storage)
+        // we check if a tokin is set (if the user is logged in, it would be set)
         sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "no_user");
         if(token.equals("no_user")){
@@ -67,8 +53,12 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        // TODO: Make Landscape available in this app
+        // we initialize all fragments once, so they get only created once not on every tap on nav drawer
+        // rather we can hook into onPause and onResume to do our things
+        exchangeFragment = new ExchangeFragment();
+        transactionFragment = new TransactionFragment();
 
+        // grab the drawer layout so we can close it on triggers
         drawerLayout = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -80,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 switch(menuItem.getItemId()){
                     case R.id.transaction_button:
-                        Fragment transactionFragment = new TransactionFragment();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, transactionFragment).commit();
                         break;
                     case R.id.exchange_button:
@@ -88,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
                         break;
                     case R.id.logout_button:
-                        sharedPreferences.edit().clear().commit();
+                        sharedPreferences.edit().clear().apply();
                         Intent redirect_login = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(redirect_login);
                         finish();
@@ -107,11 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
         // starting the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        exchangeFragment = new ExchangeFragment();
         fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
 
-        Thread ab = new Thread(new ExchangeSynchronizer(this));
-        ab.start();
     }
 
     @Override

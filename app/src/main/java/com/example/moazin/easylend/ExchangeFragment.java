@@ -1,6 +1,7 @@
 package com.example.moazin.easylend;
 
 
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,7 @@ import java.io.InputStreamReader;
  */
 public class ExchangeFragment extends Fragment {
     ExchangeAdapter exchangeAdapter;
+    Thread synchronizer_thread;
     public ExchangeFragment() {
         // Required empty public constructor
     }
@@ -47,7 +49,14 @@ public class ExchangeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(exchangeAdapter);
         recyclerView.setHasFixedSize(true);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(new ExchangeBroadcastReceiver(exchangeAdapter), intentFilter);
+        LocalBroadcastManager.getInstance(getContext())
+                .registerReceiver(new ExchangeBroadcastReceiver(exchangeAdapter), intentFilter);
+        Intent do_once=  new Intent();
+        do_once.setAction("moazin.khatri");
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(do_once);
+
+        synchronizer_thread = new Thread(new ExchangeSynchronizer(getContext()));
+        synchronizer_thread.start();
         return view;
     }
 

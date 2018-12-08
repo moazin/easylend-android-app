@@ -55,6 +55,7 @@ public class ExchangeFragment extends Fragment {
     ConstraintLayout progress_bar_constraint;
     SwipeRefreshLayout swipeRefreshLayout;
     private RequestQueue queue;
+    String queryString;
 
     public ExchangeFragment() {
         // Required empty public constructor
@@ -64,6 +65,12 @@ public class ExchangeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_exchange, container, false);
+        // get arguments if they exist
+        try {
+            queryString = getArguments().getString("search_query");
+        } catch(NullPointerException npe){
+            queryString = "";
+        }
         exchangeAdapter = new ExchangeAdapter();
         progress_bar_constraint = view.findViewById(R.id.progress_exchange_constraintlayout);
         swipeRefreshLayout = view.findViewById(R.id.exchange_swiperefresh_layout);
@@ -73,7 +80,7 @@ public class ExchangeFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(new ExchangeBroadcastReceiver
                         (exchangeAdapter,
-                         progress_bar_constraint, swipeRefreshLayout), intentFilter);
+                         progress_bar_constraint, swipeRefreshLayout, queryString), intentFilter);
 
 
         // setup loading methods

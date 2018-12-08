@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,11 +25,16 @@ public class ExchangeBroadcastReceiver extends BroadcastReceiver {
     private ExchangeAdapter exchangeAdapter;
     private ConstraintLayout exchange_progressbar_constraint;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private String queryString;
 
-    public ExchangeBroadcastReceiver(ExchangeAdapter adapter, ConstraintLayout constraintLayout, SwipeRefreshLayout swipeLayout){
+    public ExchangeBroadcastReceiver(ExchangeAdapter adapter,
+                                     ConstraintLayout constraintLayout,
+                                     SwipeRefreshLayout swipeLayout,
+                                     String query){
         exchangeAdapter = adapter;
         exchange_progressbar_constraint = constraintLayout;
         swipeRefreshLayout = swipeLayout;
+        queryString = query;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class ExchangeBroadcastReceiver extends BroadcastReceiver {
             }
             String ret = stringBuilder.toString();
             JSONArray array = new JSONArray(ret);
-            exchangeAdapter.setData(array);
+            exchangeAdapter.setData(performSearch(array));
             if(exchange_progressbar_constraint.getVisibility() == View.VISIBLE){
                 exchange_progressbar_constraint.setVisibility(View.GONE);
             }
@@ -69,5 +75,21 @@ public class ExchangeBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    private JSONArray performSearch(JSONArray array) {
+        if(queryString.equals("")) return array;
+        JSONArray result = new JSONArray();
+        for(int i = 0; i < array.length(); i++){
+            try {
+                JSONObject item = array.getJSONObject(i);
+                String fullName = (item.getString("first_name") + " " + item.getString("last_name")).toLowerCase();
+                String query = queryString.toLowerCase();
+                if(fullName.contains(query)){
+                    result.put(item);
+                }
+            } catch(JSONException jsonE){
 
+            }
+        }
+        return result;
+    }
 }

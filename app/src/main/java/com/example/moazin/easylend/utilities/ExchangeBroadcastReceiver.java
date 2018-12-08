@@ -1,4 +1,4 @@
-package com.example.moazin.easylend;
+package com.example.moazin.easylend.utilities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,8 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import com.android.volley.RequestQueue;
 
 import org.json.JSONArray;
 import org.json.JSONException;

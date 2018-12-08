@@ -1,14 +1,15 @@
-package com.example.moazin.easylend;
+package com.example.moazin.easylend.utilities;
 
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.moazin.easylend.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

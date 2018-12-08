@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import com.example.moazin.easylend.R;
+import com.example.moazin.easylend.fragments.ExchangeFragment;
+
 public class ExchangeSearchActivity extends AppCompatActivity {
 
     Fragment exchangeFragment = new ExchangeFragment();

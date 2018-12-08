@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
 import com.android.volley.RequestQueue;
+import com.example.moazin.easylend.fragments.ExchangeFragment;
+import com.example.moazin.easylend.fragments.TransactionFragment;
 
 public class MainActivity extends AppCompatActivity {
 

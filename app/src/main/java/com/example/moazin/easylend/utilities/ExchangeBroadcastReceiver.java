@@ -22,20 +22,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ExchangeBroadcastReceiver extends BroadcastReceiver {
-    private ExchangeAdapter exchangeAdapter;
-    private ConstraintLayout exchange_progressbar_constraint;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private String queryString;
+    private ExchangeAdapter mExchangeAdapter;
+    private ConstraintLayout mExchangeProgressbarConstraint;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private String mQueryString;
+    public Context mContext;
 
     public ExchangeBroadcastReceiver(ExchangeFragment fragment){
-        exchangeAdapter = fragment.exchangeAdapter;
-        exchange_progressbar_constraint = fragment.progress_bar_constraint;
-        swipeRefreshLayout = fragment.swipeRefreshLayout;
-        queryString = fragment.queryString;
+        mExchangeAdapter = fragment.mExchangeAdapter;
+        mExchangeProgressbarConstraint = fragment.mProgressBarConstraintLayout;
+        mSwipeRefreshLayout = fragment.mSwipeRefreshLayout;
+        mQueryString = fragment.mQueryString;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        mContext = context;
         Log.d("RECEIVE BROADCAST: ", "Received a broadcast");
         FileInputStream file = null;
         InputStreamReader inputStreamReader = null;
@@ -51,14 +53,14 @@ public class ExchangeBroadcastReceiver extends BroadcastReceiver {
             }
             String ret = stringBuilder.toString();
             JSONArray array = new JSONArray(ret);
-            exchangeAdapter.setData(performSearch(array));
-            if(exchange_progressbar_constraint.getVisibility() == View.VISIBLE){
-                exchange_progressbar_constraint.setVisibility(View.GONE);
+            mExchangeAdapter.setData(performSearch(array));
+            if(mExchangeProgressbarConstraint.getVisibility() == View.VISIBLE){
+                mExchangeProgressbarConstraint.setVisibility(View.GONE);
             }
-            if(swipeRefreshLayout.getVisibility() == View.GONE){
-                swipeRefreshLayout.setVisibility(View.VISIBLE);
+            if(mSwipeRefreshLayout.getVisibility() == View.GONE){
+                mSwipeRefreshLayout.setVisibility(View.VISIBLE);
             }
-            swipeRefreshLayout.setRefreshing(false);
+            mSwipeRefreshLayout.setRefreshing(false);
         } catch (IOException|JSONException ex) {
             Toast.makeText(context, ex.toString(), Toast.LENGTH_LONG).show();
         } finally {
@@ -73,18 +75,18 @@ public class ExchangeBroadcastReceiver extends BroadcastReceiver {
     }
 
     private JSONArray performSearch(JSONArray array) {
-        if(queryString.equals("")) return array;
+        if(mQueryString.equals("")) return array;
         JSONArray result = new JSONArray();
         for(int i = 0; i < array.length(); i++){
             try {
                 JSONObject item = array.getJSONObject(i);
                 String fullName = (item.getString("first_name") + " " + item.getString("last_name")).toLowerCase();
-                String query = queryString.toLowerCase();
+                String query = mQueryString.toLowerCase();
                 if(fullName.contains(query)){
                     result.put(item);
                 }
             } catch(JSONException jsonE){
-
+                Toast.makeText(mContext, jsonE.toString(), Toast.LENGTH_SHORT).show();
             }
         }
         return result;

@@ -9,12 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
-import com.example.moazin.easylend.R;
 import com.example.moazin.easylend.fragments.ExchangeFragment;
 
 public class ExchangeSearchActivity extends AppCompatActivity {
 
-    Fragment exchangeFragment = new ExchangeFragment();
+    Fragment mExchangeFragment = new ExchangeFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +23,9 @@ public class ExchangeSearchActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -34,8 +34,8 @@ public class ExchangeSearchActivity extends AppCompatActivity {
             // set the arguments
             Bundle args = new Bundle();
             args.putString("search_query", query);
-            exchangeFragment.setArguments(args);
-            fragmentManager.beginTransaction().replace(R.id.fragment_container_search, exchangeFragment).commit();
+            mExchangeFragment.setArguments(args);
+            fragmentManager.beginTransaction().replace(R.id.fragment_container_search, mExchangeFragment).commit();
         }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -30,57 +31,60 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DialogBroadcastReceiver extends BroadcastReceiver {
-    ProfileAdapter profileAdapter;
-    ProgressBar profileLoadingBar;
-    RecyclerView recyclerView;
-    int someones_id;
+    ProfileAdapter mProfileAdapter;
+    ProgressBar mProfileLoadingBar;
+    RecyclerView mRecyclerView;
+    int mPersonId;
     Context mContext;
-    RequestQueue queue;
-    Double exchange;
-    TextView exchangeView;
-    ImageView imageView;
+    RequestQueue mQueue;
+    Double mExchangeAmount;
+    TextView mExchangeView;
+    ImageView mImageView;
 
     public DialogBroadcastReceiver(PersonProfileActivity activity){
-        profileAdapter = activity.profileAdapter;
-        profileLoadingBar = activity.profileLoadingBar;
-        recyclerView = activity.recyclerView;
-        someones_id = activity.my_id;
-        exchangeView = activity.exchangeView;
-        imageView = activity.imageView;
-        exchange = activity.exchange;
+        mProfileAdapter = activity.mProfileAdapter;
+        mProfileLoadingBar = activity.mProfileLoadingBar;
+        mRecyclerView = activity.mRecyclerView;
+        mPersonId = activity.mId;
+        mExchangeView = activity.mExchangeView;
+        mImageView = activity.mImageView;
+        mExchangeAmount = activity.mExchangeAmount;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
-        exchange = exchange + intent.getExtras().getDouble("exchange_amount");
-        renderBadge(context);
-        loadData();
+        Bundle extras = intent.getExtras();
+        if(extras != null) {
+            mExchangeAmount = mExchangeAmount + extras.getDouble("exchange_amount");
+            renderBadge(context);
+            loadData();
+        }
     }
 
 
     public void renderBadge(Context context){
-        if(exchange > 0){
-            imageView.setImageDrawable(context.getDrawable(R.drawable.down_arrow_green));
-        } else if(exchange < 0) {
-            imageView.setImageDrawable(context.getDrawable(R.drawable.up_arrow_red));
+        if(mExchangeAmount > 0){
+            mImageView.setImageDrawable(context.getDrawable(R.drawable.down_arrow_green));
+        } else if(mExchangeAmount < 0) {
+            mImageView.setImageDrawable(context.getDrawable(R.drawable.up_arrow_red));
         } else {
-            imageView.setImageDrawable(context.getDrawable(R.drawable.face));
+            mImageView.setImageDrawable(context.getDrawable(R.drawable.face));
         }
-        exchangeView.setText(exchange + "");
+        mExchangeView.setText(String.valueOf(mExchangeAmount));
     }
 
     public void loadData(){
         String base_url = mContext.getString(R.string.base_url_emulator);
-        String url = "https://" + base_url + "/transactions/mytransactionswithsomeone?id=" + someones_id;
+        String url = "https://" + base_url + "/transactions/mytransactionswithsomeone?id=" + mPersonId;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        profileAdapter.setData(response);
-                        profileLoadingBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        queue.stop();
+                        mProfileAdapter.setData(response);
+                        mProfileLoadingBar.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mQueue.stop();
                     }
                 },
                 new Response.ErrorListener() {
@@ -96,12 +100,11 @@ public class DialogBroadcastReceiver extends BroadcastReceiver {
                 SharedPreferences sharedPreferences = mContext
                         .getSharedPreferences("user_info", Context.MODE_PRIVATE);
                 String token = sharedPreferences.getString("token", "no_token");
-                int my_id = sharedPreferences.getInt("id", 0);
                 params.put("Authorization", "Token " + token);
                 return params;
             }
         };
-        queue = Volley.newRequestQueue(mContext);
-        queue.add(jsonArrayRequest);
+        mQueue = Volley.newRequestQueue(mContext);
+        mQueue.add(jsonArrayRequest);
     }
 }

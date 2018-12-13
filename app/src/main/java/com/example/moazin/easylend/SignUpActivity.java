@@ -22,9 +22,7 @@ import org.json.JSONObject;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private EditText first_name, last_name, username, email, password, repeat_password;
-    private Button sign_up_button;
-
+    private EditText mFirstNameEditText, mLastNameEditText, mUsernameEditText, mEmailEditText, mPasswordEditText, mRepeatPasswordEditText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,30 +36,30 @@ public class SignUpActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // get all of our fields and buttons
-        first_name = findViewById(R.id.signup_firstname);
-        last_name = findViewById(R.id.signup_lastname);
-        username = findViewById(R.id.signup_username);
-        email = findViewById(R.id.signup_email);
-        password = findViewById(R.id.signup_password);
-        repeat_password = findViewById(R.id.signup_repeat_password);
-        sign_up_button = findViewById(R.id.signup_signup_button);
+        mFirstNameEditText = findViewById(R.id.signup_firstname);
+        mLastNameEditText = findViewById(R.id.signup_lastname);
+        mUsernameEditText= findViewById(R.id.signup_username);
+        mEmailEditText = findViewById(R.id.signup_email);
+        mPasswordEditText = findViewById(R.id.signup_password);
+        mRepeatPasswordEditText = findViewById(R.id.signup_repeat_password);
+        Button sign_up_button = findViewById(R.id.signup_signup_button);
 
 
         sign_up_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: Maybe add proper validation checks here on registration methods
-                if(!(password.getText().toString().equals(repeat_password.getText().toString()))){
+                if(!(mPasswordEditText.getText().toString().equals(mRepeatPasswordEditText.getText().toString()))){
                     Toast.makeText(SignUpActivity.this, "Passwords must match!", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         // prepare the request object
                         JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("first_name", first_name.getText());
-                        jsonObject.put("last_name", last_name.getText());
-                        jsonObject.put("email", email.getText());
-                        jsonObject.put("username", username.getText());
-                        jsonObject.put("password", password.getText());
+                        jsonObject.put("first_name", mFirstNameEditText.getText());
+                        jsonObject.put("last_name", mLastNameEditText.getText());
+                        jsonObject.put("email", mEmailEditText.getText());
+                        jsonObject.put("username", mUsernameEditText.getText());
+                        jsonObject.put("password", mPasswordEditText.getText());
                         // create a request object
                         String base_url = getString(R.string.base_url_emulator);
                         String url = "https://" + base_url +  "/users/newuser";

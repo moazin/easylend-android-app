@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
-import com.android.volley.RequestQueue;
 import com.example.moazin.easylend.fragments.ExchangeFragment;
 import com.example.moazin.easylend.fragments.TransactionFragment;
 
@@ -29,12 +28,10 @@ public class MainActivity extends AppCompatActivity {
     // TODO: Make Landscape available in this app
 
     // setting up these global variables so they can be used at different places
-    private Fragment exchangeFragment;
-    private Fragment transactionFragment;
-    private DrawerLayout drawerLayout;
-    private SharedPreferences sharedPreferences;
-    RequestQueue queue;
-    private String token;
+    private Fragment mExchangeFragment;
+    private Fragment mTransactionFragment;
+    private DrawerLayout mDrawerLayout;
+    private SharedPreferences mSharedPreferences;
 
 
     @Override
@@ -46,14 +43,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar customToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(customToolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        }
 
         // setup shared preferences (sharedPreferences are like key value storage)
-        // we check if a tokin is set (if the user is logged in, it would be set)
-        sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
-        token = sharedPreferences.getString("token", "no_user");
-        if(token.equals("no_user")){
+        // we check if a token is set (if the user is logged in, it would be set)
+        mSharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        String token = mSharedPreferences.getString("token", "no_user");
+        if((token != null) && (token.equals("no_user"))){
             Intent launchLoginActivity = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(launchLoginActivity);
             finish();
@@ -61,34 +60,33 @@ public class MainActivity extends AppCompatActivity {
 
         // we initialize all fragments once, so they get only created once not on every tap on nav drawer
         // rather we can hook into onPause and onResume to do our things
-        exchangeFragment = new ExchangeFragment();
-        transactionFragment = new TransactionFragment();
+        mExchangeFragment = new ExchangeFragment();
+        mTransactionFragment = new TransactionFragment();
 
         // grab the drawer layout so we can close it on triggers
-        drawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 menuItem.setChecked(true);
-                drawerLayout.closeDrawers();
+                mDrawerLayout.closeDrawers();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 switch(menuItem.getItemId()){
                     case R.id.transaction_button:
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, transactionFragment).commit();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, mTransactionFragment).commit();
                         break;
                     case R.id.exchange_button:
-                        exchangeFragment = new ExchangeFragment();
-                        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
+                        mExchangeFragment = new ExchangeFragment();
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, mExchangeFragment).commit();
                         break;
                     case R.id.logout_button:
-                        sharedPreferences.edit().clear().apply();
+                        mSharedPreferences.edit().clear().apply();
                         Intent redirect_login = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(redirect_login);
                         finish();
                         break;
-
                 }
                 return true;
             }
@@ -97,20 +95,20 @@ public class MainActivity extends AppCompatActivity {
         // writing the user's name in the nav drawer header
         View headerView = navigationView.getHeaderView(0);
         TextView user_name_display = ((View) headerView).findViewById(R.id.user_name_display);
-        String full_name = sharedPreferences.getString("first_name", "no_first_name") + " " + sharedPreferences.getString("last_name", "no_last_name");
+        String full_name = mSharedPreferences.getString("first_name", "no_first_name") + " " +
+                mSharedPreferences.getString("last_name", "no_last_name");
         user_name_display.setText(full_name);
 
         // starting the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, exchangeFragment).commit();
-
+        fragmentManager.beginTransaction().replace(R.id.content_frame, mExchangeFragment).commit();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);

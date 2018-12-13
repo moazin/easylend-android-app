@@ -40,47 +40,48 @@ import java.util.Map;
 
 
 public class PersonProfileActivity extends AppCompatActivity {
-    private String first_name;
-    private String last_name;
-    private int id;
-    public Double exchange;
-    private String full_name;
-    private RequestQueue queue;
-    public RecyclerView recyclerView;
-    public ProfileAdapter profileAdapter;
-    public  ProgressBar profileLoadingBar;
-    public TextView exchangeView;
-    public ImageView imageView;
-    public String token;
-    public int my_id;
+
+    public Double mExchangeAmount;
+    public RecyclerView mRecyclerView;
+    public ProfileAdapter mProfileAdapter;
+    public  ProgressBar mProfileLoadingBar;
+    public TextView mExchangeView;
+    public ImageView mImageView;
+    public String mAuthToken;
+    public int mId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String mFirstName;
+        String mLastName;
+        String mFullName;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_profile);
         Intent intent = getIntent();
-        id = intent.getIntExtra("id", 0);
-        my_id = id;
-        first_name = intent.getStringExtra("first_name");
-        last_name = intent.getStringExtra("last_name");
-        exchange = intent.getDoubleExtra("exchange", 0);
-        full_name = first_name + " " + last_name;
+        mFirstName = intent.getStringExtra("first_name");
+        mLastName = intent.getStringExtra("last_name");
+        mFullName = mFirstName + " " + mLastName;
+        mId = intent.getIntExtra("id", 0);
+        mExchangeAmount = intent.getDoubleExtra("exchange", 0);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(full_name);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if(actionBar != null){
+            actionBar.setTitle(mFullName);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
-        exchangeView = findViewById(R.id.exchange_box);
-        imageView = findViewById(R.id.exchange_arrow);
-        profileLoadingBar = findViewById(R.id.profile_load_bar);
+        mExchangeView = findViewById(R.id.exchange_box);
+        mImageView = findViewById(R.id.exchange_arrow);
+        mProfileLoadingBar = findViewById(R.id.profile_load_bar);
 
-        recyclerView = findViewById(R.id.profile_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        profileAdapter = new ProfileAdapter();
-        recyclerView.setAdapter(profileAdapter);
+        mRecyclerView = findViewById(R.id.profile_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mProfileAdapter = new ProfileAdapter();
+        mRecyclerView.setAdapter(mProfileAdapter);
 
         IntentFilter intentFilter = new IntentFilter(getString(R.string.exchange_dialog_closed));
         LocalBroadcastManager.getInstance(this).registerReceiver(new DialogBroadcastReceiver(
@@ -88,7 +89,7 @@ public class PersonProfileActivity extends AppCompatActivity {
         ), intentFilter);
 
         Intent someintent = new Intent(getString(R.string.exchange_dialog_closed));
-        someintent.putExtra("exchange_amount", (double) 0.0);
+        someintent.putExtra("exchange_amount", 0.0);
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(someintent);
     }
@@ -105,11 +106,11 @@ public class PersonProfileActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.new_transaction_button){
             NewTransactionDialogFragment newTransactionDialogFragment = new NewTransactionDialogFragment();
             Bundle args = new Bundle();
-            token = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("token", "no_token");
-            int my_id = getSharedPreferences("user_info", MODE_PRIVATE).getInt("id", 0);
-            args.putString("token", token);
-            args.putInt("to_id", id);
-            args.putInt("from_id", my_id);
+            mAuthToken = getSharedPreferences("user_info", Context.MODE_PRIVATE).getString("token", "no_token");
+            int FromId = getSharedPreferences("user_info", MODE_PRIVATE).getInt("id", 0);
+            args.putString("token", mAuthToken);
+            args.putInt("to_id", mId);
+            args.putInt("from_id", FromId);
             newTransactionDialogFragment.setArguments(args);
             newTransactionDialogFragment.show(getSupportFragmentManager(), "DIALOG:");
             return true;

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -45,40 +46,43 @@ import java.util.Map;
  */
 public class ExchangeFragment extends Fragment {
 
-
-    public ExchangeAdapter exchangeAdapter;
-    public ConstraintLayout progress_bar_constraint;
-    public SwipeRefreshLayout swipeRefreshLayout;
-    private RequestQueue queue;
-    public String queryString;
+    public ExchangeAdapter mExchangeAdapter;
+    public ConstraintLayout mProgressBarConstraintLayout;
+    public SwipeRefreshLayout mSwipeRefreshLayout;
+    public String mQueryString;
+    public Context mContext;
 
     public ExchangeFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mContext = getContext();
+
         View view = inflater.inflate(R.layout.fragment_exchange, container, false);
         // get arguments if they exist
-        try {
-            queryString = getArguments().getString("search_query");
-        } catch(NullPointerException npe){
-            queryString = "";
+        Bundle args = getArguments();
+        if(args != null) {
+            mQueryString = args.getString("search_query");
+        } else {
+            mQueryString = "";
         }
-        exchangeAdapter = new ExchangeAdapter();
-        progress_bar_constraint = view.findViewById(R.id.progress_exchange_constraintlayout);
-        swipeRefreshLayout = view.findViewById(R.id.exchange_swiperefresh_layout);
+
+        mExchangeAdapter = new ExchangeAdapter();
+        mProgressBarConstraintLayout = view.findViewById(R.id.progress_exchange_constraintlayout);
+        mSwipeRefreshLayout = view.findViewById(R.id.exchange_swiperefresh_layout);
 
         // register the broadcast receiver
         IntentFilter intentFilter = new IntentFilter(getString(R.string.exchange_data_ready));
-        LocalBroadcastManager.getInstance(getContext())
+        LocalBroadcastManager.getInstance(mContext)
                 .registerReceiver(new ExchangeBroadcastReceiver
                         (this), intentFilter);
 
-
         // setup loading methods
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 RefreshData();
@@ -87,11 +91,11 @@ public class ExchangeFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.exchange_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(exchangeAdapter);
+        recyclerView.setAdapter(mExchangeAdapter);
         recyclerView.setHasFixedSize(true);
         Intent do_once = new Intent();
         do_once.setAction(getString(R.string.exchange_data_ready));
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(do_once);
+        LocalBroadcastManager.getInstance(mContext).sendBroadcast(do_once);
         return view;
     }
 
@@ -108,7 +112,7 @@ public class ExchangeFragment extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        File directory = getContext().getCacheDir();
+                        File directory = mContext.getCacheDir();
                         File file = new File(directory, "exchange_data.json");
                         try {
                             FileWriter fileWriter = new FileWriter(file);
@@ -118,7 +122,7 @@ public class ExchangeFragment extends Fragment {
                             fileWriter.close();
                             Intent intent = new Intent();
                             intent.setAction(getString(R.string.exchange_data_ready));
-                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                         } catch (IOException ioe) {
                             // TODO: Proper error handling
                         }
@@ -127,14 +131,14 @@ public class ExchangeFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Toast.makeText(mContext, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences("user_info", Context.MODE_PRIVATE);
                 String token = sharedPreferences.getString("token", "no_token");
                 params.put("Authorization", "Token " + token);
                 return params;
@@ -145,7 +149,8 @@ public class ExchangeFragment extends Fragment {
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
-        queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue;
+        queue = Volley.newRequestQueue(mContext);
         queue.add(jsonArrayRequest);
     }
 

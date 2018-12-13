@@ -1,5 +1,6 @@
 package com.example.moazin.easylend.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,7 +26,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.moazin.easylend.PersonProfileActivity;
 import com.example.moazin.easylend.R;
 
 import org.json.JSONException;
@@ -34,35 +35,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NewTransactionDialogFragment extends DialogFragment {
-    int to_id;
-    String token;
-    EditText num;
-    int from_id;
-    Double amount;
+
+    // TODO: Fix this transaction security bug at any cost, anyone can create a transaction with any one's name
+
+    int ToId;
+    String mAuthToken;
+    EditText mAmountEditText;
+    int FromId;
+    Double mAmount;
     String action;
+    Context mContext;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         action = getString(R.string.exchange_dialog_closed);
-        // TODO: Fix this transaction security bug at any cost, anyone can create a transaction with any one's name
-        to_id = getArguments().getInt("to_id");
-        from_id = getArguments().getInt("from_id");
-        token = getArguments().getString("token");
+        mContext = getContext();
+        Bundle args = getArguments();
+        if(args != null){
+            ToId = args.getInt("to_id");
+            FromId = args.getInt("from_id");
+            mAuthToken = args.getString("token");
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.new_transaction_dialog, null);
-        num = view.findViewById(R.id.new_transaction_amount);
-        num.requestFocus();
-        builder.setView(view)
+        LayoutInflater inflater;
+        View view;
+        Activity activity = getActivity();
+        if(activity != null){
+            inflater = activity.getLayoutInflater();
+            view = inflater.inflate(R.layout.new_transaction_dialog, null);
+            mAmountEditText = view.findViewById(R.id.new_transaction_amount);
+            mAmountEditText.requestFocus();
+            builder.setView(view)
                 .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, int which) {
-                        amount = Double.valueOf(num.getText().toString());
+                        mAmount = Double.valueOf(mAmountEditText.getText().toString());
                         try {
                             JSONObject requestObj = new JSONObject();
-                            requestObj.put("from_user", from_id);
-                            requestObj.put("to_user", to_id);
-                            requestObj.put("amount", amount);
+                            requestObj.put("from_user", FromId);
+                            requestObj.put("to_user", ToId);
+                            requestObj.put("amount", mAmount);
                             String base_url = getString(R.string.base_url_emulator);
                             String url = "https://" + base_url + "/transactions/";
                             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -74,8 +87,8 @@ public class NewTransactionDialogFragment extends DialogFragment {
                                         public void onResponse(JSONObject response) {
                                             Intent intent = new Intent();
                                             intent.setAction(action);
-                                            intent.putExtra("exchange_amount", amount);
-                                            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                                            intent.putExtra("exchange_amount", mAmount);
+                                            LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -89,13 +102,13 @@ public class NewTransactionDialogFragment extends DialogFragment {
                                 @Override
                                 public Map<String, String> getHeaders() throws AuthFailureError {
                                     Map<String, String> params = new HashMap<String, String>();
-                                    params.put("Authorization", "Token " + token);
+                                    params.put("Authorization", "Token " + mAuthToken);
                                     return params;
                                 }
 
                             };
                             RequestQueue queue;
-                            queue = Volley.newRequestQueue(getContext());
+                            queue = Volley.newRequestQueue(mContext);
                             queue.add(jsonObjectRequest);
                         } catch (JSONException json){
                             json.printStackTrace();
@@ -108,8 +121,12 @@ public class NewTransactionDialogFragment extends DialogFragment {
 
                     }
                 }).setTitle("Enter an amount");
+        }
         Dialog dialog = builder.create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        Window dialogWindow = dialog.getWindow();
+        if(dialogWindow != null){
+            dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
         return dialog;
     }
 

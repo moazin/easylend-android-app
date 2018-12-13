@@ -3,12 +3,9 @@ package com.example.moazin.easylend;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -26,9 +23,9 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText username_edittext;
-    private EditText password_edittext;
-    private ProgressBar progressBar;
+    private EditText mUsernameEditText;
+    private EditText mPasswordEditText;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +33,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // get all text boxes loaded
-        username_edittext = findViewById(R.id.login_username_box);
-        password_edittext = findViewById(R.id.login_password_box);
+        mUsernameEditText = findViewById(R.id.login_username_box);
+        mPasswordEditText = findViewById(R.id.login_password_box);
 
         // grabbing the progress bar
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setIndeterminate(true);
+        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setIndeterminate(true);
 
         Button signup_redirect = findViewById(R.id.login_signup_button);
         signup_redirect.setOnClickListener(new View.OnClickListener() {
@@ -63,14 +60,14 @@ public class LoginActivity extends AppCompatActivity {
                 // Let's set the request
                 JSONObject request_data = new JSONObject();
                 try {
-                    request_data.put("username", username_edittext.getText().toString());
-                    request_data.put("password", password_edittext.getText().toString());
+                    request_data.put("username", mUsernameEditText.getText().toString());
+                    request_data.put("password", mPasswordEditText.getText().toString());
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                     (Request.Method.POST, url, request_data, new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response){
                                     try {
-                                        progressBar.setVisibility(View.INVISIBLE);
+                                        mProgressBar.setVisibility(View.INVISIBLE);
                                         String token = response.getString("token");
                                         int id = response.getInt("id");
                                         String first_name = response.getString("first_name");
@@ -98,13 +95,13 @@ public class LoginActivity extends AppCompatActivity {
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    progressBar.setVisibility(View.INVISIBLE);
+                                    mProgressBar.setVisibility(View.INVISIBLE);
                                     Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }
                     );
                 requestQueue.add(jsonObjectRequest);
-                    progressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                 } catch(JSONException jsonException){
                     Toast.makeText(LoginActivity.this, "JSON Error in Request", Toast.LENGTH_LONG).show();
                 }

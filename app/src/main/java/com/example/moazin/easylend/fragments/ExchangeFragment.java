@@ -46,12 +46,11 @@ import java.util.Map;
 public class ExchangeFragment extends Fragment {
 
 
-    ExchangeAdapter exchangeAdapter;
-    Thread synchronizer_thread;
-    ConstraintLayout progress_bar_constraint;
-    SwipeRefreshLayout swipeRefreshLayout;
+    public ExchangeAdapter exchangeAdapter;
+    public ConstraintLayout progress_bar_constraint;
+    public SwipeRefreshLayout swipeRefreshLayout;
     private RequestQueue queue;
-    String queryString;
+    public String queryString;
 
     public ExchangeFragment() {
         // Required empty public constructor
@@ -75,8 +74,7 @@ public class ExchangeFragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter(getString(R.string.exchange_data_ready));
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(new ExchangeBroadcastReceiver
-                        (exchangeAdapter,
-                         progress_bar_constraint, swipeRefreshLayout, queryString), intentFilter);
+                        (this), intentFilter);
 
 
         // setup loading methods

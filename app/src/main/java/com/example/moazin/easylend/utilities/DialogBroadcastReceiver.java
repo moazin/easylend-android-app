@@ -40,20 +40,14 @@ public class DialogBroadcastReceiver extends BroadcastReceiver {
     TextView exchangeView;
     ImageView imageView;
 
-    public DialogBroadcastReceiver(ProfileAdapter profileadapter,
-                                   ProgressBar profileloadingbar,
-                                   RecyclerView recyclerview,
-                                   int id,
-                                   TextView exchangetext,
-                                   ImageView img,
-                                    Double exch){
-        profileAdapter = profileadapter;
-        profileLoadingBar = profileloadingbar;
-        recyclerView = recyclerview;
-        someones_id = id;
-        exchangeView = exchangetext;
-        imageView = img;
-        exchange = exch;
+    public DialogBroadcastReceiver(PersonProfileActivity activity){
+        profileAdapter = activity.profileAdapter;
+        profileLoadingBar = activity.profileLoadingBar;
+        recyclerView = activity.recyclerView;
+        someones_id = activity.my_id;
+        exchangeView = activity.exchangeView;
+        imageView = activity.imageView;
+        exchange = activity.exchange;
     }
 
     @Override

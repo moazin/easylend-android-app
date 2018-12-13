@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.moazin.easylend.fragments.ExchangeFragment;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,14 +27,11 @@ public class ExchangeBroadcastReceiver extends BroadcastReceiver {
     private SwipeRefreshLayout swipeRefreshLayout;
     private String queryString;
 
-    public ExchangeBroadcastReceiver(ExchangeAdapter adapter,
-                                     ConstraintLayout constraintLayout,
-                                     SwipeRefreshLayout swipeLayout,
-                                     String query){
-        exchangeAdapter = adapter;
-        exchange_progressbar_constraint = constraintLayout;
-        swipeRefreshLayout = swipeLayout;
-        queryString = query;
+    public ExchangeBroadcastReceiver(ExchangeFragment fragment){
+        exchangeAdapter = fragment.exchangeAdapter;
+        exchange_progressbar_constraint = fragment.progress_bar_constraint;
+        swipeRefreshLayout = fragment.swipeRefreshLayout;
+        queryString = fragment.queryString;
     }
 
     @Override

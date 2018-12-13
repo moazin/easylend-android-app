@@ -43,16 +43,16 @@ public class PersonProfileActivity extends AppCompatActivity {
     private String first_name;
     private String last_name;
     private int id;
-    private Double exchange;
+    public Double exchange;
     private String full_name;
     private RequestQueue queue;
-    RecyclerView recyclerView;
-    ProfileAdapter profileAdapter;
-    private ProgressBar profileLoadingBar;
-    TextView exchangeView;
-    ImageView imageView;
-    String token;
-    int my_id;
+    public RecyclerView recyclerView;
+    public ProfileAdapter profileAdapter;
+    public  ProgressBar profileLoadingBar;
+    public TextView exchangeView;
+    public ImageView imageView;
+    public String token;
+    public int my_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,7 @@ public class PersonProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_person_profile);
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
+        my_id = id;
         first_name = intent.getStringExtra("first_name");
         last_name = intent.getStringExtra("last_name");
         exchange = intent.getDoubleExtra("exchange", 0);
@@ -83,13 +84,7 @@ public class PersonProfileActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter(getString(R.string.exchange_dialog_closed));
         LocalBroadcastManager.getInstance(this).registerReceiver(new DialogBroadcastReceiver(
-                profileAdapter,
-                profileLoadingBar,
-                recyclerView,
-                id,
-                exchangeView,
-                imageView,
-                exchange
+                this
         ), intentFilter);
 
         Intent someintent = new Intent(getString(R.string.exchange_dialog_closed));

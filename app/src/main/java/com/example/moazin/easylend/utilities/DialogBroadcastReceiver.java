@@ -78,7 +78,7 @@ public class DialogBroadcastReceiver extends BroadcastReceiver {
 
     public void loadData(){
         String base_url = mContext.getString(R.string.base_url_emulator);
-        String url = "http://" + base_url + ":8000/transactions/mytransactionswithsomeone?id=" + someones_id;
+        String url = "https://" + base_url + "/transactions/mytransactionswithsomeone?id=" + someones_id;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override

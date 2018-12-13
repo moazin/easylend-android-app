@@ -105,7 +105,7 @@ public class ExchangeFragment extends Fragment {
 
     public void RefreshData(){
         String base_url = getString(R.string.base_url_emulator);
-        String url = "http://" + base_url + ":8000/transactions/myexchangewitheveryone";
+        String url = "https://" + base_url + "/transactions/myexchangewitheveryone";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override

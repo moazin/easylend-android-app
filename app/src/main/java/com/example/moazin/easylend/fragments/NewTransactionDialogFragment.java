@@ -36,8 +36,6 @@ import java.util.Map;
 
 public class NewTransactionDialogFragment extends DialogFragment {
 
-    // TODO: Fix this transaction security bug at any cost, anyone can create a transaction with any one's name
-
     int ToId;
     String mAuthToken;
     EditText mAmountEditText;

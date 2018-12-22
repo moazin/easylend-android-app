@@ -62,7 +62,9 @@ public class SignUpActivity extends AppCompatActivity {
                         jsonObject.put("password", mPasswordEditText.getText());
                         // create a request object
                         String base_url = getString(R.string.base_url_emulator);
-                        String url = "https://" + base_url +  "/users/newuser";
+                        String port  = getString(R.string.port);
+                        String protocol = getString(R.string.protocol);
+                        String url = protocol + "://" + base_url + ":" + port + "/users/newuser";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                             new Response.Listener<JSONObject>() {
                                 @Override

@@ -55,7 +55,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
                 String base_url = getString(R.string.base_url_emulator);
-                String url = "https://" + base_url + "/api-token-auth/";
+                String port = getString(R.string.port);
+                String protocol = getString(R.string.protocol);
+                String url = protocol + "://" + base_url + ":" + port + "/api-token-auth/";
 
                 // Let's set the request
                 JSONObject request_data = new JSONObject();

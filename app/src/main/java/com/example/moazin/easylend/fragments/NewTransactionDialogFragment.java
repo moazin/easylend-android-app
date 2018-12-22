@@ -75,7 +75,9 @@ public class NewTransactionDialogFragment extends DialogFragment {
                             requestObj.put("to_user", ToId);
                             requestObj.put("amount", mAmount);
                             String base_url = getString(R.string.base_url_emulator);
-                            String url = "https://" + base_url + "/transactions/";
+                            String port = getString(R.string.port);
+                            String protocol = getString(R.string.protocol);
+                            String url = protocol + "://" + base_url + ":" + port + "/transactions/";
                             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                                     Request.Method.POST,
                                     url,

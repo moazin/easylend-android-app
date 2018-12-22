@@ -2,6 +2,7 @@ package com.example.moazin.easylend.utilities;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHolder> {
+
+    // TODO: Fix the auto exchange count update bug here
+
     private JSONArray mDataset;
 
     public ProfileAdapter(){
@@ -34,8 +38,10 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
         public  ImageView up_down_badge;
         public TextView dateTextView;
         public TextView exchangeTextView;
+        public ConstraintLayout constraintLayout;
         public MyViewHolder(View view){
             super(view);
+            constraintLayout = view.findViewById(R.id.colored_item_profile);
             up_down_badge = view.findViewById(R.id.exchange_arrow_badge);
             dateTextView = view.findViewById(R.id.exchange_date_profile);
             exchangeTextView = view.findViewById(R.id.exchange_amount_profile);
@@ -55,6 +61,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         try {
             JSONObject transaction = mDataset.getJSONObject(i);
+            Boolean verified = transaction.getBoolean("verified");
             // decide whether the persion viewing is the from or the two
             int owner_id = myViewHolder.up_down_badge.getContext()
                     .getSharedPreferences("user_info", Context.MODE_PRIVATE)
@@ -77,6 +84,14 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
                 myViewHolder.up_down_badge.setImageDrawable
                         (myViewHolder.up_down_badge.getContext()
                                 .getDrawable(R.drawable.down_arrow_red));
+            }
+
+            Drawable enabled = myViewHolder.constraintLayout.getContext().getDrawable(R.drawable.recycler_item_background);
+            Drawable disabled = myViewHolder.constraintLayout.getContext().getDrawable(R.drawable.recycler_item_background_disabled);
+            if(verified){
+                myViewHolder.constraintLayout.setBackground(enabled);
+            } else {
+                myViewHolder.constraintLayout.setBackground(disabled);
             }
         } catch (JSONException json){
             json.printStackTrace();

@@ -103,4 +103,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
         mDataset = array;
         notifyDataSetChanged();
     }
+
+    public JSONArray getData(){
+        return mDataset;
+    }
 }

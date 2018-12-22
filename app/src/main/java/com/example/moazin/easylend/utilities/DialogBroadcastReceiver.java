@@ -26,6 +26,8 @@ import com.example.moazin.easylend.PersonProfileActivity;
 import com.example.moazin.easylend.R;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,12 +58,38 @@ public class DialogBroadcastReceiver extends BroadcastReceiver {
         mContext = context;
         Bundle extras = intent.getExtras();
         if(extras != null) {
-            mExchangeAmount = mExchangeAmount + extras.getDouble("exchange_amount");
-            renderBadge(context);
+//            mExchangeAmount = mExchangeAmount + extras.getDouble("exchange_amount");
+//            renderBadge(context);
             loadData();
         }
     }
 
+
+    public void handleExchange(JSONArray transactions){
+        int size = transactions.length();
+        double netExchange = 0;
+        int owner_id =mContext
+                .getSharedPreferences("user_info", Context.MODE_PRIVATE)
+                .getInt("id", 0);
+        for(int i = 0; i < size; i++){
+            try {
+                JSONObject jsonObject = transactions.getJSONObject(i);
+                if(jsonObject.getBoolean("verified")){
+                    boolean from_is_owner = owner_id == jsonObject.getJSONObject("from_user").getInt("id");
+                    if(from_is_owner){
+                        netExchange += jsonObject.getDouble("amount");
+                    } else {
+                        netExchange -= jsonObject.getDouble("amount");
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+        mExchangeAmount = netExchange;
+        renderBadge(mContext);
+    }
 
     public void renderBadge(Context context){
         if(mExchangeAmount > 0){
@@ -86,6 +114,7 @@ public class DialogBroadcastReceiver extends BroadcastReceiver {
                         mProfileAdapter.setData(response);
                         mProfileLoadingBar.setVisibility(View.GONE);
                         mRecyclerView.setVisibility(View.VISIBLE);
+                        handleExchange(response);
                         mQueue.stop();
                     }
                 },

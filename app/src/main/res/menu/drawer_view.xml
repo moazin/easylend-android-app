@@ -5,13 +5,13 @@
             android:id="@+id/transaction_button"
             android:title="Transactions" />
         <item
-            android:id="@+id/profile_button"
-            android:title="Profile" />
-        <item
             android:id="@+id/exchange_button"
             android:title="Exchange" />
+        <item android:id="@+id/notification_button"
+            android:title="Notifications" />
         <item
             android:id="@+id/logout_button"
             android:title="Logout" />
+
     </group>
 </menu>

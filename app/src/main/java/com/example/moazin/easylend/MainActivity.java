@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
 import com.example.moazin.easylend.fragments.ExchangeFragment;
+import com.example.moazin.easylend.fragments.NotificationFragment;
 import com.example.moazin.easylend.fragments.TransactionFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     // setting up these global variables so they can be used at different places
     private Fragment mExchangeFragment;
     private Fragment mTransactionFragment;
+    private Fragment mNotificationFragment;
     private DrawerLayout mDrawerLayout;
     private SharedPreferences mSharedPreferences;
 
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         // rather we can hook into onPause and onResume to do our things
         mExchangeFragment = new ExchangeFragment();
         mTransactionFragment = new TransactionFragment();
+        mNotificationFragment = new NotificationFragment();
 
         // grab the drawer layout so we can close it on triggers
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -80,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.exchange_button:
                         mExchangeFragment = new ExchangeFragment();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, mExchangeFragment).commit();
+                        break;
+                    case R.id.notification_button:
+                        fragmentManager.beginTransaction().replace(R.id.content_frame, mNotificationFragment).commit();
                         break;
                     case R.id.logout_button:
                         mSharedPreferences.edit().clear().apply();

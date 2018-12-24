@@ -6,5 +6,6 @@
     <string name="protocol">http</string>
     <string name="exchange_data_ready">com.example.moazin.easylend.EXCHANGE_DATA_READY</string>
     <string name="exchange_dialog_closed">com.example.moazin.easylend.DIALOG_CLOSED</string>
+    <string name="notification_refresh">com.example.moazin.easylend.NOTIFICATION_REFRESH</string>
     <string name="search_hint">Name</string>
 </resources>

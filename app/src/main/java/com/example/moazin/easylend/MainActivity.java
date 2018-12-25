@@ -1,13 +1,17 @@
 package com.example.moazin.easylend;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -38,6 +42,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // setting up the toolbar as the top bar (Basically sets the menu button)
         Toolbar customToolbar = findViewById(R.id.toolbar);
@@ -126,9 +132,17 @@ public class MainActivity extends AppCompatActivity {
                 mSharedPreferences.getString("last_name", "no_last_name");
         user_name_display.setText(full_name);
 
-        // starting the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, mExchangeFragment).commit();
+        Intent intent = getIntent();
+        String purpose = intent.getStringExtra("purpose");
+        if((purpose != null)&&(purpose.equals("notification"))){
+            fragmentManager.beginTransaction().replace(R.id.content_frame, mNotificationFragment).commit();
+            navigationView.getMenu().getItem(2).setChecked(true);
+        } else {
+            // starting the fragment
+            fragmentManager.beginTransaction().replace(R.id.content_frame, mExchangeFragment).commit();
+            navigationView.getMenu().getItem(1).setChecked(true);
+        }
 
         // some firebase debugging stuff
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -142,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        createNotificationChannel();
     }
 
     @Override
@@ -198,5 +214,19 @@ public class MainActivity extends AppCompatActivity {
         };
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(jsonObjectRequest);
+    }
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

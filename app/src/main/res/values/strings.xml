@@ -8,4 +8,7 @@
     <string name="exchange_dialog_closed">com.example.moazin.easylend.DIALOG_CLOSED</string>
     <string name="notification_refresh">com.example.moazin.easylend.NOTIFICATION_REFRESH</string>
     <string name="search_hint">Name</string>
+    <string name="channel_name">DEFAULT_EASYLEND_CHANNEL</string>
+    <string name="channel_description">Channel Description</string>
+    <string name="channel_id">CHANNEL_DEFAULT</string>
 </resources>

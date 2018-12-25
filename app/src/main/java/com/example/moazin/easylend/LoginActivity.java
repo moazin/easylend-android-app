@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,6 +21,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -86,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                                         preferenceEditor.putString("email", email);
                                         preferenceEditor.putString("username", username);
                                         preferenceEditor.apply();
+                                        sendToken();
                                         Intent redirect_home = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(redirect_home);
                                         finish();
@@ -110,5 +115,46 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void sendToken(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token_fcm", "no_token");
+        String protocol = getString(R.string.protocol);
+        String base_url = getString(R.string.base_url_emulator);
+        String port = getString(R.string.port);
+        String url = protocol + "://" + base_url +":" + port + "/devices/";
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("registration_id", token);
+            jsonObject.put("type", "android");
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Toast.makeText(LoginActivity.this, "New Token sent", Toast.LENGTH_LONG).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    SharedPreferences sharedPreferences = LoginActivity.this
+                            .getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                    String token = sharedPreferences.getString("token", "no_token");
+                    params.put("Authorization", "Token " + token);
+                    return params;
+                }
+            };
+            RequestQueue queue = Volley.newRequestQueue(this);
+            queue.add(jsonObjectRequest);
+        } catch(JSONException jsonException){
+
+        }
     }
 }

@@ -14,15 +14,36 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.moazin.easylend.fragments.ExchangeFragment;
 import com.example.moazin.easylend.fragments.NotificationFragment;
 import com.example.moazin.easylend.fragments.TransactionFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentManager.beginTransaction().replace(R.id.content_frame, mNotificationFragment).commit();
                         break;
                     case R.id.logout_button:
-                        mSharedPreferences.edit().clear().apply();
+                        deleteTokens();
                         Intent redirect_login = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(redirect_login);
                         finish();
@@ -108,6 +129,19 @@ public class MainActivity extends AppCompatActivity {
         // starting the fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, mExchangeFragment).commit();
+
+        // some firebase debugging stuff
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if(!task.isSuccessful()){
+                    Log.e("FIREBASE: ", "Unable to get ID");
+                } else {
+                    String token = task.getResult().getToken();
+                    Log.e("FIREBASE: ", token);
+                }
+            }
+        });
     }
 
     @Override
@@ -129,5 +163,40 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(true); // Do not iconify the widget; expand it by default
         return true;
+    }
+
+    public void deleteTokens(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token_fcm", "no_token");
+        String protocol = getString(R.string.protocol);
+        String base_url = getString(R.string.base_url_emulator);
+        String port = getString(R.string.port);
+        String url = protocol + "://" + base_url +":" + port + "/users/deletetokens";
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        mSharedPreferences.edit().clear().apply();
+                        Toast.makeText(MainActivity.this, "Deleted tokens!", Toast.LENGTH_LONG).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                SharedPreferences sharedPreferences = MainActivity.this
+                        .getSharedPreferences("user_info", Context.MODE_PRIVATE);
+                String token = sharedPreferences.getString("token", "no_token");
+                params.put("Authorization", "Token " + token);
+                return params;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(jsonObjectRequest);
     }
 }

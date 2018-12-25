@@ -24,24 +24,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
             android:text="Moazin Khatri"
             android:textColor="@color/font_color"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/transaction_exchange" />
 
         <TextView
             android:id="@+id/transaction_exchange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:text="-696"
             android:textColor="@color/colorAccent"
-            android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/person_name"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="8dp"
             android:text="11 Jan"
             app:layout_constraintBottom_toBottomOf="parent"

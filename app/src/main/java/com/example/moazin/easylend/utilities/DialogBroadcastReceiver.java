@@ -106,7 +106,7 @@ public class DialogBroadcastReceiver extends BroadcastReceiver {
         String base_url = mContext.getString(R.string.base_url_emulator);
         String port = mContext.getString(R.string.port);
         String protocol = mContext.getString(R.string.protocol);
-        String url = protocol + "://" + base_url + ":" + port + "/transactions/mytransactionswithsomeone?id=" + mPersonId;
+        String url = protocol + "://" + base_url +  port + "/transactions/mytransactionswithsomeone?id=" + mPersonId;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override

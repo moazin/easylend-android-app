@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                 String base_url = getString(R.string.base_url_emulator);
                 String port = getString(R.string.port);
                 String protocol = getString(R.string.protocol);
-                String url = protocol + "://" + base_url + ":" + port + "/api-token-auth/";
+                String url = protocol + "://" + base_url + port + "/api-token-auth/";
 
                 // Let's set the request
                 JSONObject request_data = new JSONObject();
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         String protocol = getString(R.string.protocol);
         String base_url = getString(R.string.base_url_emulator);
         String port = getString(R.string.port);
-        String url = protocol + "://" + base_url +":" + port + "/devices/";
+        String url = protocol + "://" + base_url + port + "/devices/";
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("registration_id", token);

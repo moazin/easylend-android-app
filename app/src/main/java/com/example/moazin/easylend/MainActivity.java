@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         String protocol = getString(R.string.protocol);
         String base_url = getString(R.string.base_url_emulator);
         String port = getString(R.string.port);
-        String url = protocol + "://" + base_url +":" + port + "/users/deletetokens";
+        String url = protocol + "://" + base_url + port + "/users/deletetokens";
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override

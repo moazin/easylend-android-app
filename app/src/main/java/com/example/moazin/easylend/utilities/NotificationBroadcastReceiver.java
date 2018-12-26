@@ -53,7 +53,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         String protocol = mContext.getString(R.string.protocol);
         String base_url = mContext.getString(R.string.base_url_emulator);
         String port = mContext.getString(R.string.port);
-        String url = protocol + "://" + base_url + ":" + port + "/transactions/unverifiedtransactions";
+        String url = protocol + "://" + base_url + port + "/transactions/unverifiedtransactions";
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override

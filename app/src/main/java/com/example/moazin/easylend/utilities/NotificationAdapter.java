@@ -64,7 +64,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     try {
                         int pos = getAdapterPosition();
                         int transaction_id = mNotifications.getJSONObject(pos).getInt("id");
-                        String url = protocol + "://" + base_url + ":" + port + "/transactions/verifytransaction/" + transaction_id + "/";
+                        String url = protocol + "://" + base_url +  port + "/transactions/verifytransaction/" + transaction_id + "/";
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("verified", true);
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PATCH, url, jsonObject,
@@ -107,7 +107,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     try {
                         int pos = getAdapterPosition();
                         int transaction_id = mNotifications.getJSONObject(pos).getInt("id");
-                        String url = protocol + "://" + base_url + ":" + port + "/transactions/deletetransaction/" + transaction_id + "/";
+                        String url = protocol + "://" + base_url +  port + "/transactions/deletetransaction/" + transaction_id + "/";
                         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                                 new Response.Listener<String>() {
                                     @Override

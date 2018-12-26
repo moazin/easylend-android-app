@@ -64,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
                         String base_url = getString(R.string.base_url_emulator);
                         String port  = getString(R.string.port);
                         String protocol = getString(R.string.protocol);
-                        String url = protocol + "://" + base_url + ":" + port + "/users/newuser";
+                        String url = protocol + "://" + base_url + port + "/users/newuser";
                         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                             new Response.Listener<JSONObject>() {
                                 @Override

@@ -109,7 +109,7 @@ public class ExchangeFragment extends Fragment {
         String base_url = getString(R.string.base_url_emulator);
         String port = getString(R.string.port);
         String protocol = getString(R.string.protocol);
-        String url = protocol + "://" + base_url + ":" + port + "/transactions/myexchangewitheveryone";
+        String url = protocol + "://" + base_url +  port + "/transactions/myexchangewitheveryone";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
